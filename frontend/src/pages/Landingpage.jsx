@@ -7,7 +7,7 @@ import revealImg from '../assets/images/reveal.webp';
 
 const fetchProducts = async (searchTerm = '') => {
   try {
-    const response = await fetch('http://localhost:5000/api/products');
+    const response = await fetch('https://e-commerce-ypyv.onrender.com/api/products');
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }

@@ -11,7 +11,7 @@ const RegisterPage = () => {
     e.preventDefault();
     const guestCart = JSON.parse(localStorage.getItem('guestCart')) || [];
     try {
-      const res = await fetch('http://localhost:5000/api/register', {
+      const res = await fetch('https://e-commerce-ypyv.onrender.com/api/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password, guestCart }),
