@@ -7,6 +7,7 @@ import Footer from './components/Footer';
 import CartPage from './pages/CartPage';
 import LoginPage from './pages/Loginpage';
 import RegisterPage from './pages/Registerpage';
+import CheckoutPage from './pages/CheckoutPage';
 
 function App() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -131,6 +132,10 @@ function App() {
   const handleRemoveFromCart = (productId) => {
     setCartItems(cartItems.filter((item) => item._id !== productId));
   };
+  
+  const handlePaymentSuccess = () => {
+    setCartItems([]);
+  };
 
   return (
     <Router>
@@ -149,11 +154,16 @@ function App() {
                   cartItems={cartItems}
                   onUpdateQuantity={handleUpdateQuantity}
                   onRemoveFromCart={handleRemoveFromCart}
+                  user={user}
                 />
               }
             />
             <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
             <Route path="/register" element={<RegisterPage />} />
+            <Route
+              path="/checkout"
+              element={<CheckoutPage user={user} cartItems={cartItems} onPaymentSuccess={handlePaymentSuccess} />}
+            />
           </Routes>
         </main>
         <Footer />

@@ -1,10 +1,22 @@
+// src/pages/CartPage.jsx
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
-const CartPage = ({ cartItems, onRemoveFromCart, onUpdateQuantity }) => {
+const CartPage = ({ cartItems, onRemoveFromCart, onUpdateQuantity, user }) => {
+  const navigate = useNavigate();
   const totalAmount = cartItems.reduce(
     (total, item) => total + item.price * item.quantity,
     0
   );
+
+  const handleBuyNow = () => {
+    if (!user) {
+      alert('You must be logged in to proceed with the purchase.');
+      navigate('/login');
+    } else {
+      navigate('/checkout');
+    }
+  };
 
   return (
     <div className="container mx-auto px-4 py-10 min-h-[80vh]">
@@ -61,10 +73,16 @@ const CartPage = ({ cartItems, onRemoveFromCart, onUpdateQuantity }) => {
               </div>
             </div>
           ))}
-          <div className="flex justify-end items-center border-t-2 pt-4">
+          <div className="flex justify-between items-center border-t-2 pt-4">
             <div className="text-2xl font-bold text-gray-900">
               Total: ${totalAmount.toFixed(2)}
             </div>
+            <button
+              onClick={handleBuyNow}
+              className="bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700 transition duration-300"
+            >
+              Buy Now
+            </button>
           </div>
         </div>
       )}

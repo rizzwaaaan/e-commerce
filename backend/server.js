@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const Product = require('./models/Products');
 const User = require('./models/User');
+const Order = require('./models/Order');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -133,6 +134,41 @@ app.post('/api/cart/:userId', async (req, res) => {
     res.json(user.cart);
   } catch (err) {
     res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// NEW: Endpoint to create a new order
+app.post('/api/orders', async (req, res) => {
+  try {
+    const { userId, orderItems, shippingAddress, totalPrice } = req.body;
+
+    const newOrder = new Order({
+      user: userId,
+      orderItems: orderItems.map(item => ({
+        productId: item._id, // Ensure this maps correctly to Product ObjectId
+        name: item.name,
+        quantity: item.quantity,
+        price: item.price,
+      })),
+      shippingAddress,
+      totalPrice,
+      isPaid: true, // We'll assume the payment is successful for this example
+      paidAt: new Date(),
+    });
+
+    const savedOrder = await newOrder.save();
+
+    // Clear the user's cart after the order is successfully placed
+    const user = await User.findById(userId);
+    if (user) {
+      user.cart = [];
+      await user.save();
+    }
+
+    res.status(201).json({ message: 'Order placed successfully!', order: savedOrder });
+  } catch (err) {
+    console.error('Error placing order:', err);
+    res.status(500).json({ message: 'Server error, failed to place order' });
   }
 });
 
