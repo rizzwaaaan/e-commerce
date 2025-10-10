@@ -3,7 +3,7 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: 'https://e-commerce-ypyv.onrender.com/api', // Adjust if your backend runs on a different port
+  baseURL: 'http://localhost:5000/api', // Adjust if your backend runs on a different port
 });
 
 export const getProducts = () => API.get('/products');

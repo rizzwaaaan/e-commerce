@@ -28,7 +28,7 @@ function App() {
     if (user && user._id) {
       const fetchCart = async () => {
         try {
-          const response = await fetch(`https://e-commerce-ypyv.onrender.com/api/cart/${user._id}`);
+          const response = await fetch(`http://localhost:5000/api/cart/${user._id}`);
           if (response.ok) {
             const data = await response.json();
             setCartItems(data);
@@ -49,7 +49,7 @@ function App() {
     if (user && user._id) {
       const saveCart = async () => {
         try {
-          await fetch(`https://e-commerce-ypyv.onrender.com/api/cart/${user._id}`, {
+          await fetch(`http://localhost:5000/api/cart/${user._id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ cartItems }),
@@ -71,7 +71,7 @@ function App() {
     const guestCart = JSON.parse(localStorage.getItem('guestCart')) || [];
     if (guestCart.length > 0) {
       try {
-        const response = await fetch(`https://e-commerce-ypyv.onrender.com/api/cart/${userData._id}`, {
+        const response = await fetch(`http://localhost:5000/api/cart/${userData._id}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ guestCart }),
