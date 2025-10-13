@@ -17,6 +17,19 @@ mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('MongoDB connected...'))
   .catch(err => console.log(err));
 
+  const adminAuth = (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    // In a real application, you would decode the JWT from the header
+    // and check the 'role' claim. Here, we simulate this check.
+    const token = authHeader?.split(' ')[1];
+
+    if (token && token.includes('_admin')) {
+        // Token is valid for admin access
+        next(); 
+    } else {
+        return res.status(403).json({ message: 'Access denied. Admin required.' });
+    }
+};
 // API route to fetch all products
 app.get('/api/products', async (req, res) => {
   try {
@@ -26,7 +39,52 @@ app.get('/api/products', async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
+app.post('/api/products', adminAuth, async (req, res) => {
+    try {
+        const newProduct = new Product(req.body);
+        await newProduct.save();
+        res.status(201).json(newProduct);
+    } catch (error) {
+        // ✅ FIX: Log the detailed Mongoose error (to server console) 
+        console.error('Mongoose Validation Error:', error); 
+        
+        // Return a 400 Bad Request status code, which is appropriate for validation issues.
+        res.status(400).json({ 
+            message: 'Failed to create product due to missing fields or invalid data.', 
+            details: error.message // Return the detailed error to help debugging
+        });
+    }
+});
 
+// UPDATE a product by ID (Admin only)
+app.put('/api/products/:id', adminAuth, async (req, res) => {
+    try {
+        const updatedProduct = await Product.findByIdAndUpdate(
+            req.params.id,
+            req.body,
+            { new: true, runValidators: true }
+        );
+        if (!updatedProduct) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
+        res.json(updatedProduct);
+    } catch (error) {
+        res.status(400).json({ message: 'Failed to update product', error });
+    }
+});
+
+// DELETE a product by ID (Admin only)
+app.delete('/api/products/:id', adminAuth, async (req, res) => {
+    try {
+        const deletedProduct = await Product.findByIdAndDelete(req.params.id);
+        if (!deletedProduct) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
+        res.status(200).json({ message: 'Product deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Failed to delete product', error });
+    }
+});
 // User registration endpoint
 app.post('/api/register', async (req, res) => {
   const { username, password, guestCart } = req.body;
@@ -58,6 +116,10 @@ app.post('/api/register', async (req, res) => {
   }
 });
 
+const generateToken = (id, role) => `fake_token_${id}_${role}`;
+
+// Middleware to check if the user is an admin
+
 // User login endpoint
 app.post('/api/login', async (req, res) => {
   const { username, password } = req.body;
@@ -73,8 +135,13 @@ app.post('/api/login', async (req, res) => {
     const userWithoutPassword = {
       _id: user._id,
       username: user.username,
+      role: user.role
     };
-    res.json(userWithoutPassword);
+    const token = generateToken(user._id, user.role);
+     res.json({
+            user: userWithoutPassword, 
+            token: token // <--- THIS IS THE MISSING KEY
+        });
   } catch (err) {
     res.status(500).json({ message: 'Server error' });
   }
