@@ -4,11 +4,14 @@ import Sidebar from "../components/Sidebar";
 import ProductCard from "../components/ProductCard";
 import LaserFlow from "../assets/LaserFlow";
 import revealImg from "../assets/images/reveal.webp";
+import TextPressure from "../assets/TextPressure";
 
 // NOTE: The fetchProducts function would ideally be updated to handle a 'suggestions' endpoint
 const fetchProducts = async (searchTerm = "") => {
   try {
-    const response = await fetch("https://e-commerce-b95l.onrender.com/api/products");
+    const response = await fetch(
+      "https://e-commerce-b95l.onrender.com/api/products"
+    );
     if (!response.ok) {
       throw new Error("Network response was not ok");
     }
@@ -33,16 +36,15 @@ const fetchSuggestions = async (currentTerm) => {
   // For now, we will use a simple, client-side simulation based on product names.
 
   if (!currentTerm) return [];
-  
+
   // Simulation: Get unique names from the products array that match the term
-  const allProducts = await fetchProducts(); 
-  const uniqueNames = [...new Set(allProducts.map(p => p.name))];
-  
+  const allProducts = await fetchProducts();
+  const uniqueNames = [...new Set(allProducts.map((p) => p.name))];
+
   return uniqueNames
-    .filter(name => name.toLowerCase().includes(currentTerm.toLowerCase()))
+    .filter((name) => name.toLowerCase().includes(currentTerm.toLowerCase()))
     .slice(0, 5); // Limit to 5 suggestions
 };
-
 
 function getAuthRole() {
   const userJson = localStorage.getItem("user");
@@ -60,11 +62,10 @@ const LandingPage = ({ searchTerm, onAddToCart, onSearch }) => {
   const [filters, setFilters] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const [userRole, setUserRole] = useState(getAuthRole());
-  
+
   // NEW STATE for search suggestions
   const [suggestions, setSuggestions] = useState([]);
   const [currentSearchTerm, setCurrentSearchTerm] = useState(searchTerm || "");
-
 
   // Header-specific state and refs
   const revealRef = useRef(null);
@@ -106,10 +107,11 @@ const LandingPage = ({ searchTerm, onAddToCart, onSearch }) => {
 
     // Use currentSearchTerm for immediate filtering in addition to the prop searchTerm
     const activeSearch = currentSearchTerm || searchTerm;
-    
+
     if (activeSearch && typeof activeSearch === "string") {
       newFiltered = newFiltered.filter(
-        (p) => p.name && p.name.toLowerCase().includes(activeSearch.toLowerCase())
+        (p) =>
+          p.name && p.name.toLowerCase().includes(activeSearch.toLowerCase())
       );
     }
 
@@ -136,7 +138,7 @@ const LandingPage = ({ searchTerm, onAddToCart, onSearch }) => {
 
     setFilteredProducts(newFiltered);
   }, [searchTerm, products, filters, currentSearchTerm]);
-  
+
   // NEW EFFECT for fetching and setting suggestions
   useEffect(() => {
     const delayDebounceFn = setTimeout(async () => {
@@ -150,23 +152,22 @@ const LandingPage = ({ searchTerm, onAddToCart, onSearch }) => {
 
     return () => clearTimeout(delayDebounceFn);
   }, [currentSearchTerm]);
-  
+
   // NEW HANDLER for input change
   const handleSearchInputChange = (e) => {
     const value = e.target.value;
     setCurrentSearchTerm(value);
-    // You can call onSearch here if you want immediate filtering on key stroke, 
+    // You can call onSearch here if you want immediate filtering on key stroke,
     // but the debounce for suggestions is still useful.
     // onSearch(value); // or rely on the effect for filtering
   };
 
   // NEW HANDLER for clicking a suggestion
   const handleSuggestionClick = (suggestion) => {
-      setCurrentSearchTerm(suggestion);
-      setSuggestions([]); // Clear suggestions
-      onSearch(suggestion); // Trigger parent component to update global search term (if used)
+    setCurrentSearchTerm(suggestion);
+    setSuggestions([]); // Clear suggestions
+    onSearch(suggestion); // Trigger parent component to update global search term (if used)
   };
-
 
   const handleFilterChange = (filterType, value) => {
     setFilters((prevFilters) => {
@@ -202,21 +203,32 @@ const LandingPage = ({ searchTerm, onAddToCart, onSearch }) => {
           />
         </div>
         <div className="relative z-20 text-center px-4">
-          <h1 className="text-5xl md:text-6xl font-extrabold mb-4">
-            Discover Your Style
-          </h1>
+          <TextPressure
+            text="Orque Thrifts"
+            flex={true}
+            alpha={false}
+            stroke={false}
+            width={true}
+            weight={true}
+            italic={true}
+            textColor="#000000ff" // Tailwind gray-800
+            strokeColor="#ff0000"
+            minFontSize={32}
+          />
           <p className="text-lg md:text-xl mb-8">
             Explore our curated collection of amazing products.
           </p>
-          
+
           {/* SEARCH BAR & SUGGESTIONS CONTAINER */}
-          <div className="flex justify-center mb-6 relative z-30"> 
+          <div className="flex justify-center mb-6 relative z-30">
             <input
               type="text"
               placeholder="Search for products..."
               value={currentSearchTerm}
               onChange={handleSearchInputChange} // Use the new handler
-              onKeyDown={(e) => { if (e.key === 'Enter') onSearch(currentSearchTerm) }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") onSearch(currentSearchTerm);
+              }}
               className="w-full max-w-lg px-6 py-3 rounded-full text-white bg-grat-800 outline-none ring-2 ring-purple-400"
             />
             {/* SUGGESTIONS LIST */}
@@ -234,7 +246,7 @@ const LandingPage = ({ searchTerm, onAddToCart, onSearch }) => {
               </ul>
             )}
           </div>
-          
+
           <button className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-8 rounded-full transition duration-300">
             Shop Now
           </button>
