@@ -33,7 +33,7 @@ const Navbar = ({ cartItemCount, user, onLogout }) => {
           width={true}
           weight={true}
           italic={true}
-          textColor="#10151cff" // Tailwind gray-800
+          textColor="#000000ff" // Tailwind gray-800
           strokeColor="#ff0000"
           minFontSize={32}
         />
