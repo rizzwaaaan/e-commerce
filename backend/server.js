@@ -30,6 +30,10 @@ mongoose.connect(process.env.MONGO_URI)
         return res.status(403).json({ message: 'Access denied. Admin required.' });
     }
 };
+app.get('/ping', (req, res) => {
+  res.status(200).send('OK');
+});
+
 // API route to fetch all products
 app.get('/api/products', async (req, res) => {
   try {
