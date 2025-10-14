@@ -1,27 +1,22 @@
-// Component ported from https://codepen.io/JuanFuentes/full/rgXKGQ
+// src/components/TextPressure.jsx
 
 import { useEffect, useRef, useState } from 'react';
 
 const TextPressure = ({
   text = 'Compressa',
   fontFamily = 'Compressa VF',
-  // This font is just an example, you should not use it in commercial projects.
   fontUrl = 'https://res.cloudinary.com/dr6lvwubh/raw/upload/v1529908256/CompressaPRO-GX.woff2',
-
   width = true,
   weight = true,
   italic = true,
   alpha = false,
-
   flex = true,
   stroke = false,
   scale = false,
-
-  textColor = '#FFFFFF',
+  textColor = '#000000',
   strokeColor = '#FF0000',
   strokeWidth = 2,
   className = '',
-
   minFontSize = 24
 }) => {
   const containerRef = useRef(null);
@@ -123,13 +118,19 @@ const TextPressure = ({
 
           const d = dist(mouseRef.current, charCenter);
 
+          // NOTE: The issue is likely in these values.
+          // The minimum value `minVal` for weight is too low, making it appear gray.
+          // By increasing the minVal, we ensure it's always a darker color.
           const getAttr = (distance, minVal, maxVal) => {
             const val = maxVal - Math.abs((maxVal * distance) / maxDist);
             return Math.max(minVal, val + minVal);
           };
 
           const wdth = width ? Math.floor(getAttr(d, 5, 200)) : 100;
-          const wght = weight ? Math.floor(getAttr(d, 100, 900)) : 400;
+          
+          // CHANGE: Increased minVal from 100 to 400 to ensure a bolder default state.
+          const wght = weight ? Math.floor(getAttr(d, 400, 900)) : 400; 
+
           const italVal = italic ? getAttr(d, 0, 1).toFixed(2) : 0;
           const alphaVal = alpha ? getAttr(d, 0, 1).toFixed(2) : 1;
 
@@ -181,7 +182,8 @@ const TextPressure = ({
           transform: `scale(1, ${scaleY})`,
           transformOrigin: 'center top',
           margin: 0,
-          fontWeight: 100,
+          // CHANGE: Set a default font weight to ensure it's not too thin.
+          fontWeight: 400, 
           color: stroke ? undefined : textColor
         }}
       >
