@@ -3,7 +3,7 @@
 import axios from 'axios';
 
 // --- ADD THIS LINE ---
-const API_BASE_URL = 'http://localhost:5000'; 
+const API_BASE_URL = 'https://e-commerce-b95l.onrender.com'; 
 // ---------------------
 
 const API = axios.create({

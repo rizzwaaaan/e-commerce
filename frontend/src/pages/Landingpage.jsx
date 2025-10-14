@@ -8,7 +8,7 @@ import revealImg from "../assets/images/reveal.webp";
 // NOTE: The fetchProducts function would ideally be updated to handle a 'suggestions' endpoint
 const fetchProducts = async (searchTerm = "") => {
   try {
-    const response = await fetch("http://localhost:5000/api/products");
+    const response = await fetch("https://e-commerce-b95l.onrender.com/api/products");
     if (!response.ok) {
       throw new Error("Network response was not ok");
     }
@@ -29,7 +29,7 @@ const fetchProducts = async (searchTerm = "") => {
 // New function to simulate fetching suggestions
 const fetchSuggestions = async (currentTerm) => {
   // *** NOTE: This is where you would call a dedicated backend endpoint. ***
-  // e.g., const response = await fetch(`http://localhost:5000/api/suggestions?q=${currentTerm}`);
+  // e.g., const response = await fetch(`https://e-commerce-b95l.onrender.com/api/suggestions?q=${currentTerm}`);
   // For now, we will use a simple, client-side simulation based on product names.
 
   if (!currentTerm) return [];

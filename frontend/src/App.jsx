@@ -50,7 +50,7 @@ function App() {
       const fetchCart = async () => {
         try {
           const response = await fetch(
-            `http://localhost:5000/api/cart/${user._id}`
+            `https://e-commerce-b95l.onrender.com/api/cart/${user._id}`
           );
           if (response.ok) {
             const data = await response.json();
@@ -72,7 +72,7 @@ function App() {
     if (user && user._id) {
       const saveCart = async () => {
         try {
-          await fetch(`http://localhost:5000/api/cart/${user._id}`, {
+          await fetch(`https://e-commerce-b95l.onrender.com/api/cart/${user._id}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ cartItems }),
@@ -105,7 +105,7 @@ function App() {
       try {
         const response = await fetch(
           // ✅ FIX 3: Use the destructured 'user._id'
-          `http://localhost:5000/api/cart/${user._id}`,
+          `https://e-commerce-b95l.onrender.com/api/cart/${user._id}`,
           {
             method: "POST",
             headers: {
